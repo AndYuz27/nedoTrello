@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0;
+            background-color: lightcyan;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 900px;
+        }
+        .app{
+            width: 65%;
+            height: 900px;
+            border: 1px solid;
+        }
+        .clms{
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+            width: 100%;
+            height: 90%;
+        }
+        dddd{
+            width: 250px;
+            height: 100%;
+            border: 1px solid;
+            display: flex;
+            flex-direction: column;
+align-items: center;            
+        }
+        .card{
+            width: 85%;
+            height: 128px;
+            border: 1px dotted;
+            margin: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <label for="task">Задание: </label>
+    <input type="text" id="task">
+    <button id="save">Сохранить</button>
+    <div class="clms">
+    <dddd>
+
+    </dddd>
+    </div>
+    </div>
+</div>
+    
+
+  
+  <script>
+    const dbName = "NedoTrulla"
+    const tableName = "users";
+    let emptyHeader = "Слушай у тебя записей в книге нет!";
+    let db;
+    let dbVersion = 6;
+    let rq = indexedDB.open(dbName, dbVersion);
+    rq.onupgradeneeded = function(e) {
+  console.log("connect")
+  let thisDB = e.target.result;
+  if (!thisDB.objectStoreNames.contains(tableName)) {
+    thisDB.createObjectStore(tableName, {autoIncrement: true});
+  };
+};
+rq.onsuccess = function(e) {
+  console.log("succsess..")
+  db = e.target.result;
+};
+rq.onerror = function(e) {
+  let err = e.target.error;
+  alert(err.name, err.message);
+};
+document.querySelector("#save").addEventListener("click", saveItem);
+document.querySelector("#update").addEventListener("click", updateTable);
+
+function updateTable(){
+  let objectStore = db.transaction([tableName], "readonly").objectStore(tableName);
+  let cursor = objectStore.openCursor();
+  const output = document.querySelector("#column");
+  output.innerHTML = "";
+  let add_content = false;
+  cursor.onsuccess = function(e) {
+    let result = e.target.result;
+
+    if(result != null) {
+      let tr = document.createElement("dddd");
+      tr.innerHTML += `<div class="card">`;
+      tr.innerHTML += `<p>${result.value.user_task_i}</p>`;
+      tr.innerHTML += `</div>`;
+      output.appendChild(tr);
+      add_content = true;
+      result.continue();
+    } else if(result == null && add_content == false) {
+      output.innerHTML = `<div class="card">${emptyHeader}</div>`;
+    }
+  }
+  console.log("updated");
+}
+
+
+  </script>
+</body>
+</html>
