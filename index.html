@@ -23,6 +23,7 @@
             justify-content: center;
             align-items: center;
             height: 900px;
+            font-family: sans-serif;
         }
         .app{
             width: 100%;
@@ -96,12 +97,60 @@ align-items: center;
      </div>
 
  </div>
+        <div class="card">
+            <h2>Sample Text</h2>
+            <div class="btn_card">
+                <a href="#">edit</a>
+                <a href="#">Delete</a>
+                <a href="#">View</a>
+
+            </div>
+
+        </div>
+        <div class="card">
+            <h2>Sample Text</h2>
+            <div class="btn_card">
+                <a href="#">edit</a>
+                <a href="#">Delete</a>
+                <a href="#">View</a>
+
+            </div>
+
+        </div>
     </dddd>
         <dddd>
+            <div class="card">
+                <h2>Sample Text</h2>
+                <div class="btn_card">
+                    <a href="#">edit</a>
+                    <a href="#">Delete</a>
+                    <a href="#">View</a>
 
+                </div>
+
+            </div>
         </dddd>
         <dddd>
+            <div class="card">
+                <h2>Sample Text</h2>
+                <div class="btn_card">
+                    <a href="#">edit</a>
+                    <a href="#">Delete</a>
+                    <a href="#">View</a>
 
+                </div>
+
+            </div>
+            <div class="card">
+                <h2>Sample Text</h2>
+                <div class="btn_card">
+                    <a href="#">edit</a>
+                    <a href="#">Delete</a>
+                    <a href="#">View</a>
+
+                </div>
+
+            </div>
         </dddd>
     </div>
     </div>
@@ -110,53 +159,21 @@ align-items: center;
 
   
   <script>
-    const dbName = "NedoTrulla"
-    const tableName = "users";
-    let emptyHeader = "Слушай у тебя записей в книге нет!";
-    let db;
-    let dbVersion = 6;
-    let rq = indexedDB.open(dbName, dbVersion);
-    rq.onupgradeneeded = function(e) {
-  console.log("connect")
-  let thisDB = e.target.result;
-  if (!thisDB.objectStoreNames.contains(tableName)) {
-    thisDB.createObjectStore(tableName, {autoIncrement: true});
-  };
-};
-rq.onsuccess = function(e) {
-  console.log("succsess..")
-  db = e.target.result;
-};
-rq.onerror = function(e) {
-  let err = e.target.error;
-  alert(err.name, err.message);
-};
-document.querySelector("#save").addEventListener("click", saveItem);
-document.querySelector("#update").addEventListener("click", updateTable);
+console.log(" 000  0   0")
+console.log("0   0 00  0")
+console.log("00000 0 0 0")
+console.log("0   0 0  00")
 
-function updateTable(){
-  let objectStore = db.transaction([tableName], "readonly").objectStore(tableName);
-  let cursor = objectStore.openCursor();
-  const output = document.querySelector("#column");
-  output.innerHTML = "";
-  let add_content = false;
-  cursor.onsuccess = function(e) {
-    let result = e.target.result;
 
-    if(result != null) {
-      let tr = document.createElement("dddd");
-      tr.innerHTML += `<div class="card">`;
-      tr.innerHTML += `<p>${result.value.user_task_i}</p>`;
-      tr.innerHTML += `</div>`;
-      output.appendChild(tr);
-      add_content = true;
-      result.continue();
-    } else if(result == null && add_content == false) {
-      output.innerHTML = `<div class="card">${emptyHeader}</div>`;
-    }
-  }
-  console.log("updated");
-}
+let data_trull = {
+    'boards': [],
+    'settings': {
+        'userName': 'User',
+        'dataPersistence': true
+    },
+    'currentBoard':  0,
+    'identfier': 0
+};
 
 
   </script>
