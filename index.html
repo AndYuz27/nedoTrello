@@ -164,6 +164,18 @@ console.log("0   0 00  0")
 console.log("00000 0 0 0")
 console.log("0   0 0  00")
 
+const items = document.querySelectorAll(".card");
+        const b = document.querySelectorAll("dddd");
+        let dragEl = null;
+        let dropEl = null;
+
+        items.forEach(i => {
+            i.draggable = true;
+            i.addEventListener("dragstart", e => {
+                dragEl = e.target;
+                e.target.classList.add("isDragging");
+            });
+        })
 
 let data_trull = {
     'boards': [],
