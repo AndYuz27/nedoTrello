@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+
         header{
             display: flex;
             flex-direction: row;
@@ -40,7 +41,7 @@
             margin: 50px;
             height: 700px;
         }
-        dddd{
+        .clm{
             width: 250px;
             height: 100%;
             border: 1px solid;
@@ -70,6 +71,29 @@ align-items: center;
             background-color: lightgreen;
             color: black;
         }
+        .btn_card{
+            position: relative;
+            top: 64px;
+        }
+        .form{
+    border-radius: 3px;
+    margin-top: auto;
+    display: none;
+
+}
+        .textarea{
+            width: 100px;
+    height: 20px;
+    border-radius: 3px;
+    border: none;
+    background:white ;
+    padding: 10px;
+    width: 100%;
+    overflow: hidden;
+}
+.textarea:focus{
+    outline: none;
+}
     </style>
 </head>
 <body>
@@ -82,111 +106,157 @@ align-items: center;
 
         </nav>
     </header>
-    <label for="task">Задание: </label>
-    <input type="text" id="task">
-    <button id="save">Сохранить</button>
     <div class="clms">
-    <dddd>
- <div class="card">
-     <h2>Sample Text</h2>
+    <div class="clm">
+        <span contenteditable="true" class="title">Add Text</span>
+        <div class="cards">
+ <div class="card" draggable="true">
+     Sample Text
      <div class="btn_card">
-         <a href="#">edit</a>
-         <a href="#">Delete</a>
-         <a href="#">View</a>
-
+        <button class="remove__item-btn">Delete</button>
      </div>
-
  </div>
-        <div class="card">
-            <h2>Sample Text</h2>
-            <div class="btn_card">
-                <a href="#">edit</a>
-                <a href="#">Delete</a>
-                <a href="#">View</a>
+        
 
-            </div>
+
+
+
 
         </div>
-        <div class="card">
-            <h2>Sample Text</h2>
-            <div class="btn_card">
-                <a href="#">edit</a>
-                <a href="#">Delete</a>
-                <a href="#">View</a>
-
+        <div class="form">
+            <textarea class="textarea" placeholder="Add text for the card"></textarea>
+            <div class="btns">
+                <button class="add__item-btn">Add Card</button>
+                <button class="cancel">Cancel</button>
             </div>
-
         </div>
-    </dddd>
-        <dddd>
-            <div class="card">
-                <h2>Sample Text</h2>
-                <div class="btn_card">
-                    <a href="#">edit</a>
-                    <a href="#">Delete</a>
-                    <a href="#">View</a>
+        <div class="add__btn">
+            <span>+</span>
+            Добавить карту
+        </div>
+    </div>
 
-                </div>
-
-            </div>
-        </dddd>
-        <dddd>
-            <div class="card">
-                <h2>Sample Text</h2>
-                <div class="btn_card">
-                    <a href="#">edit</a>
-                    <a href="#">Delete</a>
-                    <a href="#">View</a>
-
-                </div>
-
-            </div>
-            <div class="card">
-                <h2>Sample Text</h2>
-                <div class="btn_card">
-                    <a href="#">edit</a>
-                    <a href="#">Delete</a>
-                    <a href="#">View</a>
-
-                </div>
-
-            </div>
-        </dddd>
+    </div>
+        
     </div>
     </div>
+    <div class="button">Add Board</div>
+
 </div>
     
 
   
   <script>
-console.log(" 000  0   0")
-console.log("0   0 00  0")
-console.log("00000 0 0 0")
-console.log("0   0 0  00")
+//массив задач
+const lists = document.querySelectorAll(".cards");
+const button = document.querySelector(".button");
+const boards = document.querySelectorAll(".clms");
+const removeBtn = document.querySelector(".remove__item-btn");
+const listItem = document.querySelectorAll(".card");
+const boardItem = document.querySelectorAll(".clm");
+let dragEl, dropEl = null;
 
-const items = document.querySelectorAll(".card");
-        const b = document.querySelectorAll("dddd");
-        let dragEl = null;
-        let dropEl = null;
 
-        items.forEach(i => {
-            i.draggable = true;
-            i.addEventListener("dragstart", e => {
-                dragEl = e.target;
-                e.target.classList.add("isDragging");
-            });
+function addTask(){
+    const addbtn = document.querySelector(".add__btn");
+    const addBtn = document.querySelector(".add__item-btn");
+    const cancelBtn = document.querySelector(".cancel");
+    const textarea = document.querySelector(".textarea");
+    const form = document.querySelector(".form");
+
+    let value 
+
+    addbtn.addEventListener('click', () =>{
+        form.style.display = "block";
+        addbtn.style.display = "none";
+        addBtn.style.display = "none";
+        
+        textarea.addEventListener('input', e =>{
+            value = e.target.value
+            if(value){
+                addBtn.style.display = "block";
+            } else{
+                addBtn.style.display = "none";
+            }
         })
+    })
+    cancelBtn.addEventListener('click', e =>{
+        textarea.value = ''
+        value = ''
+        form.style.display = "none";
+        btn.style.display = "flex";
+    })
+    function removeTask(){
+        const removeBtn = document.querySelector(".remove__item-btn");
+        const newItm = document.querySelector(".card");
+  
+        removeBtn.addEventListener("click", () =>{
+            newItm.style.display = "none"
+        })
+        
+    }
+    removeTask()
 
-let data_trull = {
-    'boards': [],
-    'settings': {
-        'userName': 'User',
-        'dataPersistence': true
-    },
-    'currentBoard':  0,
-    'identfier': 0
-};
+    addBtn.addEventListener("click", () =>{
+        const newItm = document.createElement("div");
+        newItm.classList.add("card");
+        newItm.draggable = true;
+        newItm.textContent = value;
+        lists[0].append(newItm);
+        textarea.value = ""
+        value = ""
+        form.style.display = "none";
+        addbtn.style.display = "flex";
+        const removeBtn = document.createElement("button");
+        removeBtn.classList.add("remove__item-btn");
+        removeBtn.textContent = "Delete";
+        newItm.append(removeBtn);
+        removeBtn.addEventListener("click", ()=>{
+            newItm.style.display = "none"
+        })
+        
+    })
+}
+addTask()
 
+
+function addBoard(){
+    const boards = document.querySelector(".clms");
+    const board = document.createElement("div");
+    board.classList.add("clm");
+    board.innerHTML = `
+    <span contenteditable="true" class="title">Add Text</span>
+    <div class="cards"></div>
+    <div class="form">
+            <textarea class="textarea" placeholder="Add text for the card"></textarea>
+            <div class="btns">
+                <button class="add__item-btn">Add Card</button>
+                <button class="cancel">Cancel</button>
+            </div>
+        </div>
+        <div class="add__btn">
+            <span>+</span>
+            Добавить карту
+        </div>
+    `
+    boards.append(board);
+    chgTitle()
+}
+button.addEventListener("click", addBoard)
+
+
+
+function chgTitle(){
+    const titles = document.querySelectorAll(".title");
+    titles.forEach(title =>{
+        title.addEventListener("click", e =>{
+            e.target.textContent = ""
+        })
+    })
+}
+
+
+chgTitle()
 
   </script>
 </body>
