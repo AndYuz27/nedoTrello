@@ -1,263 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-
-        header{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 30px;
-            padding-right: 30px;
-            background-color: orange;
-        }
-        body{
-            margin: 0;
-            background-color: lightcyan;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 900px;
-            font-family: sans-serif;
-        }
-        .app{
-            width: 100%;
-            height: 900px;
-            border: 1px solid;
-            margin: 20px;
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-        }
-        .clms{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            margin: 50px;
-            height: 700px;
-        }
-        .clm{
-            width: 250px;
-            height: 100%;
-            border: 1px solid;
-            display: flex;
-            flex-direction: column;
-align-items: center;            
-        }
-        .card{
-            width: 85%;
-            height: 128px;
-            border: 1px dotted;
-            margin: 15px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
 
-        }
-        a{
-            color: ghostwhite;
-            text-decoration: none;
-            padding: 5px;
-            background-color: dimgray;
-            border-radius: 5px;
-        }
-        a:hover{
-            background-color: lightgreen;
-            color: black;
-        }
-        .btn_card{
-            position: relative;
-            top: 64px;
-        }
-        .form{
-    border-radius: 3px;
-    margin-top: auto;
-    display: none;
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>Cool-board | Simple Kanban Board</title>
+    </head>
+    <body>
+        <header>
+            <div class="header-f">
+                <span id="sidebar-button" class="fa">&#9776;</span>
+                <h1>NedoTrull</h1>
+                <h2 id="title" style="text-align: center;">Name Table</h2>
+                <span class="title-actions-container" >
+                    <label for="auto-save" class="auto-save-text">Auto Save</label>
+                    <label class="switch" id="auto-save-label">
+                       <input id="auto-save" type="checkbox" checked>
+                       <span class="slider round"></span>
+                    </label>
 
-}
-        .textarea{
-            width: 100px;
-    height: 20px;
-    border-radius: 3px;
-    border: none;
-    background:white ;
-    padding: 10px;
-    width: 100%;
-    overflow: hidden;
-}
-.textarea:focus{
-    outline: none;
-}
-    </style>
-</head>
-<body>
-<div class="app">
-    <header>
-        <h1>NedoTrull</h1>
-        <nav>
-<!--            <a href="/nedoTrull"></a> &lt;!&ndash; For Git Pages &ndash;&gt;-->
-            <a href="/">Main Page</a> <!-- For localhosat -->
-
-        </nav>
-    </header>
-    <div class="clms">
-    <div class="clm">
-        <span contenteditable="true" class="title">Add Text</span>
-        <div class="cards">
- <div class="card" draggable="true">
-     Sample Text
-     <div class="btn_card">
-        <button class="remove__item-btn">Delete</button>
-     </div>
- </div>
+                </span>
+            </div>
+        </header>
         
 
+        <div id="sidebar" class="sidenav">
+            <span id="sidebar-close">&times;</span>
+            <p class="is-title">Доски</p>
+            <ul id="boards-list">
+            </ul>
 
-
-
-
-        </div>
-        <div class="form">
-            <textarea class="textarea" placeholder="Add text for the card"></textarea>
-            <div class="btns">
-                <button class="add__item-btn">Add Card</button>
-                <button class="cancel">Cancel</button>
+            <div class="flex-col">
+                <input type="text" id="add-board-text" name="add-board" placeholder="Add Board...">
+                <button id="add-board-button">Add Board</button>
             </div>
         </div>
-        <div class="add__btn">
-            <span>+</span>
-            Добавить карту
+
+        <div id="card-context-menu" class="context-menu">
+            <ul>
+                <li id="card-context-menu-delete">Delete</li>
+                <li id="card-context-menu-clear">Clear</li>
+            </ul>
         </div>
-    </div>
 
-    </div>
-        
-    </div>
-    </div>
-    <div class="button">Add Board</div>
-
-</div>
-    
-
-  
-  <script>
-//массив задач
-const lists = document.querySelectorAll(".cards");
-const button = document.querySelector(".button");
-const boards = document.querySelectorAll(".clms");
-const removeBtn = document.querySelector(".remove__item-btn");
-const listItem = document.querySelectorAll(".card");
-const boardItem = document.querySelectorAll(".clm");
-let dragEl, dropEl = null;
-
-
-function addTask(){
-    const addbtn = document.querySelector(".add__btn");
-    const addBtn = document.querySelector(".add__item-btn");
-    const cancelBtn = document.querySelector(".cancel");
-    const textarea = document.querySelector(".textarea");
-    const form = document.querySelector(".form");
-
-    let value 
-
-    addbtn.addEventListener('click', () =>{
-        form.style.display = "block";
-        addbtn.style.display = "none";
-        addBtn.style.display = "none";
-        
-        textarea.addEventListener('input', e =>{
-            value = e.target.value
-            if(value){
-                addBtn.style.display = "block";
-            } else{
-                addBtn.style.display = "none";
-            }
-        })
-    })
-    cancelBtn.addEventListener('click', e =>{
-        textarea.value = ''
-        value = ''
-        form.style.display = "none";
-        btn.style.display = "flex";
-    })
-    function removeTask(){
-        const removeBtn = document.querySelector(".remove__item-btn");
-        const newItm = document.querySelector(".card");
-  
-        removeBtn.addEventListener("click", () =>{
-            newItm.style.display = "none"
-        })
-        
-    }
-    removeTask()
-
-    addBtn.addEventListener("click", () =>{
-        const newItm = document.createElement("div");
-        newItm.classList.add("card");
-        newItm.draggable = true;
-        newItm.textContent = value;
-        lists[0].append(newItm);
-        textarea.value = ""
-        value = ""
-        form.style.display = "none";
-        addbtn.style.display = "flex";
-        const removeBtn = document.createElement("button");
-        removeBtn.classList.add("remove__item-btn");
-        removeBtn.textContent = "Delete";
-        newItm.append(removeBtn);
-        removeBtn.addEventListener("click", ()=>{
-            newItm.style.display = "none"
-        })
-        
-    })
-}
-addTask()
-
-
-function addBoard(){
-    const boards = document.querySelector(".clms");
-    const board = document.createElement("div");
-    board.classList.add("clm");
-    board.innerHTML = `
-    <span contenteditable="true" class="title">Add Text</span>
-    <div class="cards"></div>
-    <div class="form">
-            <textarea class="textarea" placeholder="Add text for the card"></textarea>
-            <div class="btns">
-                <button class="add__item-btn">Add Card</button>
-                <button class="cancel">Cancel</button>
+        <div class="container" id="main-container">
+            <div id="cards-container">
+                <div id="add-card">
+                    <input maxlength="128" type="text" id="add-card-text" name="add-card" placeholder="Add Card..." autofocus>
+                    <button id="add-card-button" class="plus-button">+</button>
+                </div>
             </div>
         </div>
-        <div class="add__btn">
-            <span>+</span>
-            Добавить карту
+
+        <div id="alert-container">
+            <div id="alerts">
+            </div>
         </div>
-    `
-    boards.append(board);
-    chgTitle()
-}
-button.addEventListener("click", addBoard)
 
+        <div id="dialog" class="modal">
+            <div class="dialog-content">
+                <span id="dialog-close" class="confirm-dialog-close">&times;</span>
+                <div id="dialog-text" class="confirm-dialog-text"></div>
+                <div class="confirm-dialog-actions">
+                    <button id="dialog-cancel" class="confirm-dialog-cancel"> Cancel </button>
+                    <button id="dialog-confirm" class="confirm-dialog-confirm"> Confirm </button>
+                </div>
+            </div>
+        </div>
 
-
-function chgTitle(){
-    const titles = document.querySelectorAll(".title");
-    titles.forEach(title =>{
-        title.addEventListener("click", e =>{
-            e.target.textContent = ""
-        })
-    })
-}
-
-
-chgTitle()
-
-  </script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
