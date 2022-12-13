@@ -5,21 +5,7 @@
     --secondary-color: white;
 }
 
-/* ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-    background: var(--primary-color-dark);
-    border-radius: 10px;
-}
 
-::-webkit-scrollbar-track {
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-color-light);
-    border-radius: 10px;
-} */
 
 * {
     box-sizing: border-box;
@@ -150,6 +136,8 @@ body {
 
 .parent-card > ul > li {
     display: flex;
+    border: 1px solid;
+
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;

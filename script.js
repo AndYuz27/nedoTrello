@@ -144,8 +144,7 @@ function toggleHoverStyle(show) {
 
 function addBoard() {
     let _boardTitle = e_addBoardText.value;
-    if (!_boardTitle) return createAlert("Type a name for the board!"); 
-    if (appData.boards.length >= 512) return createAlert("Max limit for boards reached.")  
+    if (!_boardTitle) return createAlert("Введите название доски"); 
     e_addBoardText.value = '';
 
     let _newBoard = new Board(_boardTitle, uID(), {'theme': null});
@@ -573,34 +572,13 @@ function toggleSidebar() {
 e_sidebarButton.addEventListener('click', toggleSidebar);
 e_sidebarClose.addEventListener('click', toggleSidebar);
 
-// уведомление
-function createAlert(text) {
-    let _e = document.createElement('div');
-    let _p = document.createElement('p');
-    _p.innerText = text;
-    _e.classList.add('alert');
-    _e.appendChild(_p);
 
-    e_alerts.appendChild(_e);
-    setTimeout(function(){
-        _e.classList.add('animate-hidden');
-    }, 3500);
-    setTimeout(function(){
-        _e.parentNode.removeChild(_e);
-    }, 4500);
-}
 
-function listenClickOutside(event) {
-    const _withinBoundaries = event.composedPath().includes(e_sidebar);
-    if (!_withinBoundaries && e_sidebar.style.width === "250px") {
-        toggleSidebar();
-    }
-}
 //модалка
 function createConfirmDialog(text, onConfirm) {
     cardContextMenu_hide({target:{offsetParent:'n/a'}});
 
-    var modal = document.getElementById("dialog");
+    var modal = document.getElementById("dialog"); //само окно
     var span = document.getElementById("dialog-close");
     var dialogText = document.getElementById('dialog-text');
     var cancelButton = document.getElementById('dialog-cancel');
