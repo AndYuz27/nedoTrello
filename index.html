@@ -27,24 +27,25 @@
                 </span>
             </div>
         </header>
-        
-
         <div id="sidebar" class="sidenav">
             <span id="sidebar-close">&times;</span>
+            <div class="user">
+                <div class="avatar"></div>
+                <div class="nn">
+                    <h1 class="fffgg">Andy</h1>
+                </div>
+            </div>
             <p class="is-title">Доски</p>
             <ul id="boards-list">
             </ul>
-
             <div class="flex-col">
                 <input type="text" id="add-board-text" name="add-board" placeholder="Add Board...">
                 <button id="add-board-button">Add Board</button>
             </div>
         </div>
-
         <div id="card-context-menu" class="context-menu">
             <ul>
                 <li id="card-context-menu-delete">Delete</li>
-                <li id="card-context-menu-clear">Clear</li>
             </ul>
         </div>
 
@@ -52,16 +53,14 @@
             <div id="cards-container">
                 <div id="add-card">
                     <input maxlength="128" type="text" id="add-card-text" name="add-card" placeholder="Add Card..." autofocus>
-                    <button id="add-card-button" class="plus-button">+</button>
+                    <button id="add-card-button" class="plus-button">добавить колонку</button>
                 </div>
             </div>
         </div>
-
         <div id="alert-container">
             <div id="alerts">
             </div>
         </div>
-
         <div id="dialog" class="modal">
             <div class="dialog-content">
                 <span id="dialog-close" class="confirm-dialog-close">&times;</span>
@@ -72,8 +71,8 @@
                 </div>
             </div>
         </div>
-
         <script src="alerts.js"></script>
+        <script src="sidebar.js"></script>
         <script src="script.js"></script>
     </body>
 </html>
