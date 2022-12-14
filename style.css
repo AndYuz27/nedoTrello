@@ -136,7 +136,7 @@ body {
 
 .parent-card > ul > li {
     display: flex;
-    height: 64px;
+    height: 128px;
     border: 1px dotted;
     justify-content: space-between;
     gap: 1.5rem;
