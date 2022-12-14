@@ -1,24 +1,34 @@
 "use strict"
 
-const mainContainer = document.getElementById('main-container');
-const cardsContainer = document.getElementById('cards-container');
-const sidebar = document.getElementById('sidebar');
-const sidebarButton = document.getElementById('sidebar-button');
-const sidebarClose = document.getElementById('sidebar-close');
-const addCardText = document.getElementById('add-card-text');
-const addCardButton = document.getElementById('add-card-button');
-const boardsList = document.getElementById('boards-list');
-const addBoardText = document.getElementById('add-board-text');
-const addBoardButton = document.getElementById('add-board-button');
-const autoSaveButton = document.getElementById('auto-save');
-const cardContextMenu = document.getElementById('card-context-menu');
-const cardContextMenuDelete = document.getElementById('card-context-menu-delete');
-const aaatitle = document.getElementById('title');
-// функция автосохраниения
+/* <=================================== Elements / Variables ===================================> */
+const e_mainContainer = document.getElementById('main-container');
+const e_cardsContainer = document.getElementById('cards-container');
+const e_sidebar = document.getElementById('sidebar');
+const e_sidebarButton = document.getElementById('sidebar-button');
+const e_sidebarClose = document.getElementById('sidebar-close');
+const e_addCardText = document.getElementById('add-card-text');
+const e_addCardButton = document.getElementById('add-card-button');
+const e_boardsList = document.getElementById('boards-list');
+const e_addBoardText = document.getElementById('add-board-text');
+const e_addBoardButton = document.getElementById('add-board-button');
+const e_autoSaveButton = document.getElementById('auto-save');
+const e_saveButton = document.getElementById('save-button');
+const e_settingsButton = document.getElementById('settings-button');
+const e_deleteButton = document.getElementById('delete-button');
+const e_cardContextMenu = document.getElementById('card-context-menu');
+const e_cardContextMenuDelete = document.getElementById('card-context-menu-delete');
+const e_cardContextMenuClear = document.getElementById('card-context-menu-clear');
+
+const e_alerts = document.getElementById('alerts');
+
+const e_title = document.getElementById('title');
+
+// Auto save enabled as default
 let autoSaveInternalId = setInterval(function (){
     saveData();
 }, 1000);
-var appData = { // данные для localStorage
+
+var appData = {
     'boards': [],
     'settings': {
         'userName': "User",
@@ -27,13 +37,12 @@ var appData = { // данные для localStorage
     'currentBoard': 0, 
     'identifier': 0
 };
-function currentCards() { // обработка текущей карточки
+function currentCards() {
     return appData.boards[appData.currentBoard].cards;
 }
-function currentBoard() { // обработка досок 
+function currentBoard() {
     return appData.boards[appData.currentBoard];
 }
-//работа с массивами
 Array.prototype.move = function(from, to) {
 
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -44,93 +53,107 @@ Array.prototype.insert = function(index, item) {
 function uID() {
     appData.identifier += 1;
     return 'b' + appData.identifier;
-}//создание уникального ID
+}
 function getMouseOverCard() {
     return document.querySelectorAll('.parent-card:hover')[0];
-}// драг н дроп 
+}
 function getMouseOverItem() {
     return document.querySelectorAll('.parent-card > ul > li:hover')[0];
-}// драг н дроп 
-function getItemFromElement(element) { // получение элемента item
-    for (let crd of currentCards()) {
-        for (let item of crd.items) {
-            if (item.id === element.id) {
-                return item;
+}
+
+function getItemFromElement(element) {
+    for (let _card of currentCards()) {
+        for (let _item of _card.items) {
+            if (_item.id === element.id) {
+                return _item;
             }
         }
     }
 }
-function getCardFromElement(element) { // получение карточки от элемента
+function getCardFromElement(element) {
     return currentCards().find(e => e.id === element.id);
 }
-function getBoardFromId(id) { // получение доски от ID
-    return appData.boards.find(b => b.id === id);
+
+function getBoardFromId(id) {
+    return appData.boards.find(_b => _b.id === id);
 }
+
 function listBoards() {
-    boardsList.innerHTML = '';
-    for (let brd of appData.boards) {
-        let brdTitle = document.createElement('li');
-        brdTitle.innerText = brd.name;
-        brdTitle.id = brd.id;
-        if (brd.id === currentBoard().id) brdTitle.classList.add('is-active');
-        brdTitle.addEventListener('click', () => {
-            renderBoard(brd);
+    e_boardsList.innerHTML = '';
+    for (let _board of appData.boards) {
+        let _boardTitle = document.createElement('li');
+        _boardTitle.innerText = _board.name;
+        _boardTitle.id = _board.id;
+        if (_board.id === currentBoard().id) _boardTitle.classList.add('is-active');
+        _boardTitle.addEventListener('click', () => {
+            renderBoard(_board);
             listBoards();
         });
-        boardsList.appendChild(brdTitle);
+        e_boardsList.appendChild(_boardTitle);
     }
 }
 function renderBoard(board) {
     appData.currentBoard = appData.boards.indexOf(board);
-    aaatitle.innerText = currentBoard().name;
+    document.title = 'Cool-board | ' + currentBoard().name;
+    e_title.innerText = currentBoard().name;
     renderAllCards();
 }
+
 function renderAllCards() {
-    for (let card of cardsContainer.querySelectorAll('.parent-card')) {
+    for (let card of e_cardsContainer.querySelectorAll('.parent-card')) {
         card.remove();
     }
     for (let card of currentCards()) {
-        let gen = card.generateElement();
-        cardsContainer.insertBefore(gen, cardsContainer.childNodes[cardsContainer.childNodes.length - 2]);
+        let generated = card.generateElement();
+        e_cardsContainer.insertBefore(generated, e_cardsContainer.childNodes[e_cardsContainer.childNodes.length - 2]);
         card.update();
     }
 }
-function renderCard(cID) {
-    let card = currentCards().find(e => e.id === cID);
-    if (!card) {
-        let curCardElement = document.getElementById(cID);
-        curCardElement.parentNode.removeChild(curCardElement);
+function renderCard(cardID) {
+    let _card = currentCards().find(e => e.id === cardID);
+
+    if (!_card) {
+        let _currentCardElement = document.getElementById(cardID);
+        _currentCardElement.parentNode.removeChild(_currentCardElement);
         return;
     }
-    let curCardElement = document.getElementById(card.id);
-    if (curCardElement != null) {
-        let gen = card.generateElement();
-        curCardElement.parentNode.replaceChild(gen, curCardElement);
+    let _currentCardElement = document.getElementById(_card.id);
+    if (_currentCardElement != null) {
+        let _generated = _card.generateElement();
+        _currentCardElement.parentNode.replaceChild(_generated, _currentCardElement);
     } else {
-        let gen = card.generateElement();
-        cardsContainer.insertBefore(gen, cardsContainer.childNodes[cardsContainer.childNodes.length - 2]);
+        let _generated = _card.generateElement();
+        e_cardsContainer.insertBefore(_generated, e_cardsContainer.childNodes[e_cardsContainer.childNodes.length - 2]);
     }
-    card.update();
+    _card.update();
 }
+
 function toggleHoverStyle(show) {
+
     if (show) {
-        let hoverStyle = document.createElement('style');
-        hoverStyle.id = "dragHover";
-        document.body.appendChild(hoverStyle);
+
+        let _hoverStyle = document.createElement('style');
+        _hoverStyle.id = "dragHover";
+        document.body.appendChild(_hoverStyle);
     } else {
-        let hoverStyle = document.getElementById('dragHover');
-        hoverStyle.parentNode.removeChild(hoverStyle);
+
+        let _hoverStyle = document.getElementById('dragHover');
+        _hoverStyle.parentNode.removeChild(_hoverStyle);
     }
 }
+
 function addBoard() {
-    let boardTitle = addBoardText.value;
-    if (!boardTitle) return createAlert("Введите название доски"); 
-    addBoardText.value = '';
-    let newBoard = new Board(boardTitle, uID(), {'theme': null});
-    appData.boards.push(newBoard);
+    let _boardTitle = e_addBoardText.value;
+    if (!_boardTitle) return createAlert("Введите название доски"); 
+    e_addBoardText.value = '';
+
+    let _newBoard = new Board(_boardTitle, uID(), {'theme': null});
+    appData.boards.push(_newBoard);
     listBoards();
 }
+
 class Item {
+
     constructor(title, description=null, id, parentCardId) {
         this.title = title;
         this.description = description; 
@@ -138,9 +161,11 @@ class Item {
         this.isDone = false;
         this.parentCardId = parentCardId;
     }
+
     getParentCard() {
         return document.getElementById(this.parentCardId);
     }
+
     check(chk=true) {
         this.isDone = chk;
         if (chk) {
@@ -150,19 +175,22 @@ class Item {
         }
     }
     update() {
-        let element = document.getElementById(this.id);
-        element.getElementsByTagName('p')[0].addEventListener('click', () => {
+        let _element = document.getElementById(this.id);
+        _element.getElementsByTagName('p')[0].addEventListener('click', () => {
             if (this.isDone) {
                 this.check(false);
             } else {
                 this.check(true);
             }
         });
-        element.addEventListener('mousedown', cardDrag_startDragging, false);
+
+        _element.addEventListener('mousedown', cardDrag_startDragging, false);
         this.check(this.isDone);
     }
 }
+
 class Card {
+
     constructor(name, id, parentBoardId) {
         this.name = name;
         this.items = [];
@@ -178,53 +206,54 @@ class Card {
         renderCard(this.id);
     }
     update() {
-        for (let item of this.items) {
-            item.update();
+        for (let _item of this.items) {
+            _item.update();
         }
     }
-    renderItems() { // рендер карточки
-        let newItemList = document.createElement('ul');
-        newItemList.id = this.id + '-ul';
-        for (let item of this.items) {
-            let newItem = document.createElement('li');
-            newItem.id = item.id;
-            let newItemTitle = document.createElement('p');
-            newItemTitle.innerText = item.title;
-            newItemTitle.classList.add('item-title', 'text-fix', 'unselectable');
-            let newItemButtons = document.createElement('span');
-            let newItemEditButton = document.createElement('p'); //создание кнопки изменеия
-            newItemEditButton.ariaHidden = true;
-            newItemEditButton.innerText = "edit"
-            newItemEditButton.addEventListener('click', () => {
-                let input = document.createElement('textarea');
-                input.value = newItemTitle.textContent;
-                input.classList.add('item-title');
-                input.maxLength = 256;
-                newItemTitle.replaceWith(input);
-                let save = () => {
-                    item.title = input.value;
+    renderItems() {
+        let _newItemList = document.createElement('ul');
+        _newItemList.id = this.id + '-ul';
+        for (let _item of this.items) {
+            let _newItem = document.createElement('li');
+            _newItem.id = _item.id;
+            let _newItemTitle = document.createElement('p');
+            _newItemTitle.innerText = _item.title;
+            _newItemTitle.classList.add('item-title', 'text-fix', 'unselectable');
+            let _newItemButtons = document.createElement('span');
+            let _newItemEditButton = document.createElement('i');
+            _newItemEditButton.ariaHidden = true;
+            _newItemEditButton.classList.add('fa', 'fa-pencil');
+            _newItemEditButton.addEventListener('click', () => {
+                let _input = document.createElement('textarea');
+                _input.value = _newItemTitle.textContent;
+                _input.classList.add('item-title');
+                _input.maxLength = 256;
+                _newItemTitle.replaceWith(_input);
+                let _save = () => {
+                    _item.title = _input.value;
                     renderCard(this.id);
                 };
-                input.addEventListener('blur', save, {
+                _input.addEventListener('blur', _save, {
                     once: true,
                 });
-                input.focus();
+                _input.focus();
             });
-            let newItemDeleteButton = document.createElement('p');
-            newItemDeleteButton.ariaHidden = true;
-            newItemDeleteButton.innerText = "Delete"
-            newItemDeleteButton.addEventListener('click', () => {
-                this.removeItem(item);
+            let _newItemDeleteButton = document.createElement('i');
+            _newItemDeleteButton.ariaHidden = true;
+            _newItemDeleteButton.classList.add('fa', 'fa-trash');
+            _newItemDeleteButton.addEventListener('click', () => {
+                createConfirmDialog("Ты хочешь удалить задание?", () => this.removeItem(_item));
             });
-            newItemButtons.appendChild(newItemEditButton);
-            newItemButtons.appendChild(newItemDeleteButton);
-            newItem.appendChild(newItemTitle);
-            newItem.appendChild(newItemButtons);
-            newItemList.appendChild(newItem);
+            _newItemButtons.appendChild(_newItemEditButton);
+            _newItemButtons.appendChild(_newItemDeleteButton);
+            _newItem.appendChild(_newItemTitle);
+            _newItem.appendChild(_newItemButtons);
+            _newItemList.appendChild(_newItem);
         }
-        return newItemList;
+        return _newItemList;
     }
     generateElement() {
+
         let newCardHeader = document.createElement('span');
         let newCardHeaderTitle = document.createElement('h2');
         newCardHeaderTitle.id = this.id + '-h2';
@@ -236,11 +265,11 @@ class Card {
             input.classList.add('card-title');
             input.maxLength = 128;
             newCardHeaderTitle.replaceWith(input);
-            let save = () => {
+            let _save = () => {
                 this.name = input.value;
                 renderCard(this.id);
             };
-            input.addEventListener('blur', save, {
+            input.addEventListener('blur', _save, {
                 once: true,
             });
             input.focus();
@@ -264,7 +293,7 @@ class Card {
         let newButton = document.createElement('button');
         newButton.id = this.id + '-button';
         newButton.classList.add("plus-button");
-        newButton.innerText = 'Добавить';
+        newButton.innerText = '+';
         newButton.addEventListener('click', () => {
             let inputValue = newInput.value;
             if (!inputValue) return createAlert("Сначала назовите премет");
@@ -284,6 +313,7 @@ class Card {
         }
         newCard.appendChild(newInput);
         newCard.appendChild(newButton);
+
         return newCard;
     }
 }
@@ -301,16 +331,17 @@ class Board {
         return 'e' + this.identifier.toString();
     }
     addCard() {
-        let cardTitle = addCardText.value; //название карточки
-        addCardText.value = '';
-            if (!cardTitle) cardTitle = `Доска без названия ${this.cards.length + 1}`; //если не назвать карточку
-        let card = new Card(cardTitle, this.uID(), this.id);
-        this.cards.push(card);
+        let _cardTitle = e_addCardText.value; //название карточки
+        e_addCardText.value = '';
+            if (!_cardTitle) _cardTitle = `Доска без названия ${this.cards.length + 1}`; //если не назвать карточку
+        let _card = new Card(_cardTitle, this.uID(), this.id);
+        this.cards.push(_card);
 
-        let newCard = card.generateElement();
-        cardsContainer.insertBefore(newCard, cardsContainer.childNodes[cardsContainer.childNodes.length - 2]);
+        let _newCard = _card.generateElement();
+        e_cardsContainer.insertBefore(_newCard, e_cardsContainer.childNodes[e_cardsContainer.childNodes.length - 2]);
     }
 }
+
 var cardDrag_mouseDown = false;  
 var cardDrag_mouseDownOn = null;  
 
@@ -319,6 +350,7 @@ const cardDrag_update = (e) => {
     cardDrag_mouseDownOn.style.left = e.pageX + 'px';
     cardDrag_mouseDownOn.style.top = e.pageY + 'px';
 };
+
 const cardDrag_startDragging = (e) => {
     if (e.target.tagName !== 'LI') return;
 
@@ -327,30 +359,34 @@ const cardDrag_startDragging = (e) => {
     cardDrag_mouseDownOn.style.position = 'absolute';
     toggleHoverStyle(true);
 };
+
 const cardDrag_stopDragging = (e) => {
     if (!cardDrag_mouseDown) return;
     toggleHoverStyle(false);
     let hvCrad = getMouseOverCard();
     if (hvCrad) {
-        let hvrItem = getMouseOverItem();
+        let _hoverItem = getMouseOverItem();
         let hvCradObject = getCardFromElement(hvCrad);
         let hItemObj = getItemFromElement(cardDrag_mouseDownOn);
         if (hvCrad === hItemObj.getParentCard()) {
-            if (hvrItem) {
-                if (hvrItem !== cardDrag_mouseDownOn) {
-                    let _hvrItemObject = getItemFromElement(hvrItem);
-                    hvCradObject.items.move(hvCradObject.items.indexOf(hItemObj), hvCradObject.items.indexOf(_hvrItemObject));
+            if (_hoverItem) {
+                if (_hoverItem !== cardDrag_mouseDownOn) {
+                    let _hoverItemObject = getItemFromElement(_hoverItem);
+                    hvCradObject.items.move(hvCradObject.items.indexOf(hItemObj), hvCradObject.items.indexOf(_hoverItemObject));
                 }
             }
+
             renderCard(hItemObj.getParentCard().id);
+
         } else {
-            if (hvrItem) {
-                if (hvrItem !== cardDrag_mouseDownOn) {
-                    let hoverItemObject = getItemFromElement(hvrItem);
-                    let hoverItemParentObject = getCardFromElement(hoverItemObject.getParentCard());
-                    hoverItemParentObject.items.insert(hoverItemParentObject.items.indexOf(hoverItemObject), hItemObj);
+
+            if (_hoverItem) {
+                if (_hoverItem !== cardDrag_mouseDownOn) {
+                    let _hoverItemObject = getItemFromElement(_hoverItem);
+                    let _hoverItemParentObject = getCardFromElement(_hoverItemObject.getParentCard());
+                    _hoverItemParentObject.items.insert(_hoverItemParentObject.items.indexOf(_hoverItemObject), hItemObj);
                     getCardFromElement(hItemObj.getParentCard()).removeItem(hItemObj);
-                    hItemObj.parentCardId = hoverItemParentObject.id;
+                    hItemObj.parentCardId = _hoverItemParentObject.id;
                 }
             } else {
                 hvCradObject.items.push(hItemObj);
@@ -358,39 +394,50 @@ const cardDrag_stopDragging = (e) => {
                 getCardFromElement(hItemObj.getParentCard()).removeItem(hItemObj);
                 hItemObj.parentCardId = hvCradObject.id;
             }
+
             renderCard(hvCradObject.id);
             renderCard(hItemObj.getParentCard().id);
         }
+
     }
     cardDrag_mouseDown = false;
     cardDrag_mouseDownOn.style.position = 'static';
     cardDrag_mouseDownOn = null;
 };
-mainContainer.addEventListener('mousemove', cardDrag_update);
-mainContainer.addEventListener('mouseleave', cardDrag_stopDragging, false);
+
+e_mainContainer.addEventListener('mousemove', cardDrag_update);
+e_mainContainer.addEventListener('mouseleave', cardDrag_stopDragging, false);
 window.addEventListener('mouseup', cardDrag_stopDragging, false);
+
+
+
 let scroll_mouseDown = false;
 let scroll_startX, scroll_scrollLeft;
 
 const scroll_startDragging = (e) => {
     scroll_mouseDown = true;
-    scroll_startX = e.pageX - mainContainer.offsetLeft;
-    scroll_scrollLeft = mainContainer.scrollLeft;
+    scroll_startX = e.pageX - e_mainContainer.offsetLeft;
+    scroll_scrollLeft = e_mainContainer.scrollLeft;
 };
+
 const scroll_stopDragging = (e) => {
     scroll_mouseDown = false;
 };
+
 const scroll_update = (e) => {
     e.preventDefault();
     if(!scroll_mouseDown || cardDrag_mouseDown) return;
 
-    let scroll = (e.pageX - mainContainer.offsetLeft) - scroll_startX;
-    mainContainer.scrollLeft = scroll_scrollLeft - scroll;
+    let _scroll = (e.pageX - e_mainContainer.offsetLeft) - scroll_startX;
+    e_mainContainer.scrollLeft = scroll_scrollLeft - _scroll;
 };
-mainContainer.addEventListener('mousemove', scroll_update);
-mainContainer.addEventListener('mousedown', scroll_startDragging, false);
-mainContainer.addEventListener('mouseup', scroll_stopDragging, false);
-mainContainer.addEventListener('mouseleave', scroll_stopDragging, false);
+
+e_mainContainer.addEventListener('mousemove', scroll_update);
+e_mainContainer.addEventListener('mousedown', scroll_startDragging, false);
+e_mainContainer.addEventListener('mouseup', scroll_stopDragging, false);
+e_mainContainer.addEventListener('mouseleave', scroll_stopDragging, false);
+
+
 // ф-ии карточек 
 let cardContextMenu_currentCard;
 const cardContextMenu_show = (e) => {
@@ -398,71 +445,101 @@ const cardContextMenu_show = (e) => {
     cardContextMenu_currentCard = getMouseOverCard();
 
     const { clientX: mouseX, clientY: mouseY } = e;
-    cardContextMenu.style.top = mouseY + 'px';
-    cardContextMenu.style.left = mouseX + 'px';
-    cardContextMenu.classList.remove('visible');
+    e_cardContextMenu.style.top = mouseY + 'px';
+    e_cardContextMenu.style.left = mouseX + 'px';
+
+    e_cardContextMenu.classList.remove('visible');
     setTimeout(() => {
-        cardContextMenu.classList.add('visible');
+        e_cardContextMenu.classList.add('visible');
     });
+
 };
+
 const cardContextMenu_hide = (e) => {
-    if (e.target.offsetParent != cardContextMenu && cardContextMenu.classList.contains('visible')) {
-        cardContextMenu.classList.remove("visible");
+    if (e.target.offsetParent != e_cardContextMenu && e_cardContextMenu.classList.contains('visible')) {
+        e_cardContextMenu.classList.remove("visible");
     }
 };
+
+const cardContextMenu_clearCard = () => {
+    createConfirmDialog('Are you sure to clear this board', () => {
+        let _currentCardObject = getCardFromElement(cardContextMenu_currentCard);
+
+        _currentCardObject.items.length = 0;
+        renderCard(_currentCardObject.id);
+    });
+};
+
 const cardContextMenu_deleteCard = () => {
-        let curCardObject = getCardFromElement(cardContextMenu_currentCard);
-        currentCards().splice(currentCards().indexOf(curCardObject), 1);
+    createConfirmDialog('Are you sure to delete this card', () => {
+        let _currentCardObject = getCardFromElement(cardContextMenu_currentCard);
+
+        currentCards().splice(currentCards().indexOf(_currentCardObject), 1);
         cardContextMenu_hide({target:{offsetParent:'n/a'}}); 
-        renderCard(curCardObject.id);
+
+        renderCard(_currentCardObject.id);
+    });
 }
 document.body.addEventListener('click', cardContextMenu_hide);
-cardContextMenuDelete.addEventListener('click', cardContextMenu_deleteCard);
-function saveData() { //сохраниение данных в LocalStorage
-    window.localStorage.setItem('kards-appData', JSON.stringify(appData)); // 
-}
-function loadData() { //загрузка данных с localStorage
-    let data = window.localStorage.getItem('kards-appData');
-    if (data) {
-        let appData = JSON.parse(data);
-        appData.settings = appData.settings;
-        appData.currentBoard = appData.currentBoard;
-        appData.identifier = appData.identifier;
-        for (let board of appData.boards) {
-            let newBoard = new Board(board.name, board.id, board.settings, board.identifier);
-            for (let card of board.cards) {
-                let newCard = new Card(card.name, card.id, board.id);
+e_cardContextMenuClear.addEventListener('click', cardContextMenu_clearCard);
+e_cardContextMenuDelete.addEventListener('click', cardContextMenu_deleteCard);
 
-                for (let item of card.items) {
-                    let newItem = new Item(item.title, item.description, item.id, card.id);
-                    newCard.items.push(newItem);
+function saveData() {
+    window.localStorage.setItem('kards-appData', JSON.stringify(appData));
+}
+
+function getDataFromLocalStorage() {
+    return window.localStorage.getItem('kards-appData');
+}
+
+function loadData() { //загрузка данных с localStorage
+    let _data = window.localStorage.getItem('kards-appData');
+    if (_data) {
+        let _appData = JSON.parse(_data);
+        appData.settings = _appData.settings;
+        appData.currentBoard = _appData.currentBoard;
+        appData.identifier = _appData.identifier;
+        for (let _board of _appData.boards) {
+            let _newBoard = new Board(_board.name, _board.id, _board.settings, _board.identifier);
+            for (let _card of _board.cards) {
+                let _newCard = new Card(_card.name, _card.id, _board.id);
+
+                for (let _item of _card.items) {
+                    let _newItem = new Item(_item.title, _item.description, _item.id, _card.id);
+                    _newCard.items.push(_newItem);
                 }
-                newBoard.cards.push(newCard);
+                _newBoard.cards.push(_newCard);
             }
-            appData.boards.push(newBoard);
+            appData.boards.push(_newBoard);
         }
 
         renderBoard(appData.boards[appData.currentBoard]);
     } else {
-        let defaultBoard = new Board("Untitled Board", 'b0', {'theme': null});
-        appData.boards.push(defaultBoard);
+        let _defaultBoard = new Board("Untitled Board", 'b0', {'theme': null});
+        appData.boards.push(_defaultBoard);
     }
     listBoards();
 }
+
 function clearData() {
     window.localStorage.clear();
 }
+
 loadData();
-addCardText.addEventListener('keyup', (e) => {
+
+e_addCardText.addEventListener('keyup', (e) => {
     if (e.code === "Enter") currentBoard().addCard();
 });
-addCardButton.addEventListener('click', () => currentBoard().addCard());
 
-addBoardText.addEventListener('keyup', (e) => {
+e_addCardButton.addEventListener('click', () => currentBoard().addCard());
+
+e_addBoardText.addEventListener('keyup', (e) => {
     if (e.code === "Enter") addBoard();
 });
-addBoardButton.addEventListener('click', addBoard);
-autoSaveButton.addEventListener('change',  function (event) {
+
+e_addBoardButton.addEventListener('click', addBoard);
+
+e_autoSaveButton.addEventListener('change',  function (event) {
     if (this.checked) {
         autoSaveInternalId = setInterval(function (){
             saveData();
@@ -471,12 +548,36 @@ autoSaveButton.addEventListener('change',  function (event) {
         window.clearInterval(autoSaveInternalId);
     }
 })
+window.onbeforeunload = function () {
+    if (JSON.stringify(appData) !== getDataFromLocalStorage()) {
+        return confirm();
+    }
+}
 
-sidebarButton.addEventListener('click', toggleSidebar); // отвечает за открытие боковой панели
-sidebarClose.addEventListener('click', toggleSidebar); // отвечает за закрытие боковой панели
+function toggleSidebar() {
+    if (('toggled' in e_sidebar.dataset)) {
+        delete e_sidebar.dataset.toggled;
+        e_sidebar.style.width = "0";
+        e_sidebar.style.boxShadow = "unset";
+        document.removeEventListener('click', listenClickOutside);
+    } else {
+        e_sidebar.dataset.toggled = '';
+        e_sidebar.style.width = "250px";
+        e_sidebar.style.boxShadow = "100px 100px 0 100vw rgb(0 0 0 / 50%)";
+        setTimeout(() => {
+            document.addEventListener('click', listenClickOutside);
+        }, 300);
+    }
+}
+e_sidebarButton.addEventListener('click', toggleSidebar);
+e_sidebarClose.addEventListener('click', toggleSidebar);
+
+
+
 //модалка
 function createConfirmDialog(text, onConfirm) {
     cardContextMenu_hide({target:{offsetParent:'n/a'}});
+
     var modal = document.getElementById("dialog"); //само окно
     var span = document.getElementById("dialog-close");
     var dialogText = document.getElementById('dialog-text');

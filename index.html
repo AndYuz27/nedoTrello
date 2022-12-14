@@ -9,12 +9,12 @@
 
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <title>Cool-board</title>
+        <title>Cool-board | Simple Kanban Board</title>
     </head>
     <body>
         <header>
             <div class="header-f">
-                <span id="sidebar-button">more</span>
+                <span id="sidebar-button" class="fa">&#9776;</span>
                 <h1>NedoTrull</h1>
                 <h2 id="title" style="text-align: center;">Name Table</h2>
                 <span class="title-actions-container" >
@@ -27,8 +27,10 @@
                 </span>
             </div>
         </header>
+        
+
         <div id="sidebar" class="sidenav">
-            <span id="sidebar-close">close</span>
+            <span id="sidebar-close">&times;</span>
             <div class="user">
                 <div class="avatar"></div>
                 <div class="nn">
@@ -38,14 +40,17 @@
             <p class="is-title">Доски</p>
             <ul id="boards-list">
             </ul>
+
             <div class="flex-col">
                 <input type="text" id="add-board-text" name="add-board" placeholder="Add Board...">
                 <button id="add-board-button">Add Board</button>
             </div>
         </div>
+
         <div id="card-context-menu" class="context-menu">
             <ul>
                 <li id="card-context-menu-delete">Delete</li>
+                <li id="card-context-menu-clear">Clear</li>
             </ul>
         </div>
 
@@ -53,14 +58,16 @@
             <div id="cards-container">
                 <div id="add-card">
                     <input maxlength="128" type="text" id="add-card-text" name="add-card" placeholder="Add Card..." autofocus>
-                    <button id="add-card-button" class="plus-button">добавить колонку</button>
+                    <button id="add-card-button" class="plus-button">+</button>
                 </div>
             </div>
         </div>
+
         <div id="alert-container">
             <div id="alerts">
             </div>
         </div>
+
         <div id="dialog" class="modal">
             <div class="dialog-content">
                 <span id="dialog-close" class="confirm-dialog-close">&times;</span>
@@ -71,8 +78,8 @@
                 </div>
             </div>
         </div>
+
         <script src="alerts.js"></script>
-        <script src="sidebar.js"></script>
         <script src="script.js"></script>
     </body>
 </html>
