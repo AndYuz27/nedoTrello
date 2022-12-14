@@ -91,7 +91,6 @@ function listBoards() {
 }
 function renderBoard(board) {
     appData.currentBoard = appData.boards.indexOf(board);
-    document.title = 'Cool-board | ' + currentBoard().name;
     e_title.innerText = currentBoard().name;
     renderAllCards();
 }
