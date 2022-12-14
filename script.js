@@ -1,6 +1,5 @@
 "use strict"
 
-/* <=================================== Elements / Variables ===================================> */
 const e_mainContainer = document.getElementById('main-container');
 const e_cardsContainer = document.getElementById('cards-container');
 const e_sidebar = document.getElementById('sidebar');
@@ -17,13 +16,11 @@ const e_settingsButton = document.getElementById('settings-button');
 const e_deleteButton = document.getElementById('delete-button');
 const e_cardContextMenu = document.getElementById('card-context-menu');
 const e_cardContextMenuDelete = document.getElementById('card-context-menu-delete');
-const e_cardContextMenuClear = document.getElementById('card-context-menu-clear');
 
 const e_alerts = document.getElementById('alerts');
 
 const e_title = document.getElementById('title');
 
-// Auto save enabled as default
 let autoSaveInternalId = setInterval(function (){
     saveData();
 }, 1000);
@@ -461,27 +458,14 @@ const cardContextMenu_hide = (e) => {
     }
 };
 
-const cardContextMenu_clearCard = () => {
-    createConfirmDialog('Are you sure to clear this board', () => {
-        let _currentCardObject = getCardFromElement(cardContextMenu_currentCard);
-
-        _currentCardObject.items.length = 0;
-        renderCard(_currentCardObject.id);
-    });
-};
 
 const cardContextMenu_deleteCard = () => {
-    createConfirmDialog('Are you sure to delete this card', () => {
         let _currentCardObject = getCardFromElement(cardContextMenu_currentCard);
-
         currentCards().splice(currentCards().indexOf(_currentCardObject), 1);
         cardContextMenu_hide({target:{offsetParent:'n/a'}}); 
-
         renderCard(_currentCardObject.id);
-    });
 }
 document.body.addEventListener('click', cardContextMenu_hide);
-e_cardContextMenuClear.addEventListener('click', cardContextMenu_clearCard);
 e_cardContextMenuDelete.addEventListener('click', cardContextMenu_deleteCard);
 
 function saveData() {
