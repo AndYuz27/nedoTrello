@@ -234,16 +234,13 @@ input[type="text"]:focus {
     border: none;
     font-size: 1.5em;
     border-radius: 100%;
-    background-color: var(--primary-color-dark);
-    color: white;
+    color: black;
     padding: 0.2em 0.5em;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.plus-button:hover {
-    background-color: #008fe2;
-}
+
 
 header {
     background-color: orange;
