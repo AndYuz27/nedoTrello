@@ -239,7 +239,7 @@ class Card {
             _newItemDeleteButton.ariaHidden = true;
             _newItemDeleteButton.classList.add('fa', 'fa-trash');
             _newItemDeleteButton.addEventListener('click', () => {
-                createConfirmDialog("Ты хочешь удалить задание?", () => this.removeItem(_item));
+                this.removeItem(_item);
             });
             _newItemButtons.appendChild(_newItemEditButton);
             _newItemButtons.appendChild(_newItemDeleteButton);
